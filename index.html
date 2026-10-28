@@ -9,7 +9,7 @@
 <meta property="og:description" content="허성범 님, 11월 21일 TEDxHongikU ‘표류’에 초대합니다.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #000000;
@@ -18,10 +18,11 @@
     --sea-deep: #06183A;
     --sea: #0D3570;
     --sea-bright: #1A56A6;
+    --gold: linear-gradient(135deg, #9C7A3C, #E6CF8F 28%, #B08A45 52%, #EAD7A0 78%, #A3823F);
     --w: min(80vw, 340px);
     --envH: calc(var(--w) * .7);
     --lw: calc(var(--w) * .92);
-    --lh: calc(var(--w) * .62);
+    --lh: calc(var(--w) * .68);
     color-scheme: dark;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
@@ -37,7 +38,7 @@
     background: var(--ink);
     color: var(--paper);
     overflow: hidden;
-    font-family: "Hahmlet", "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", serif;
+    font-family: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", serif;
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
   }
@@ -108,27 +109,35 @@
   .flap-front { background: var(--paper); }
   .flap-back { background: var(--red); transform: rotateY(180deg); }
 
-  /* 봉인 */
+  /* 봉인: 들쭉날쭉한 선을 따라 찢어져, 윗조각은 덮개와 함께 넘어가고 아랫조각은 봉투에 남음 */
   .seal {
     position: absolute; z-index: 7;
     width: calc(var(--w) * .14); aspect-ratio: 1;
     left: 50%; top: calc(var(--envH) * .6);
     transform: translate(-50%, -50%);
+    transform-origin: 88% 50%;
     transition: transform .25s ease-out;
   }
+  .seal::before, .seal::after { content: ""; position: absolute; border-radius: 50%; }
+  .seal::before { inset: 0; background: var(--red); }
+  .seal::after { inset: 20%; border: 1px solid rgba(255, 255, 255, .8); }
+  .seal-top {
+    clip-path: polygon(0 0, 100% 0, 100% 47%, 95% 50%, 89% 46%, 84% 51%, 77% 48%, 72% 53%, 66% 50%,
+      60% 55%, 52% 51%, 47% 56%, 41% 52%, 33% 58%, 28% 54%, 21% 59%, 14% 55%, 7% 60%, 0 56%);
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  }
+  /* 아랫조각은 찢는 선 위로 살짝 겹쳐 그려 찢기 전에는 이음매가 보이지 않게 함 */
+  .seal-bottom {
+    clip-path: polygon(0 53%, 7% 57%, 14% 52%, 21% 56%, 28% 51%, 33% 55%, 41% 49%, 47% 53%, 52% 48%,
+      60% 52%, 66% 47%, 72% 50%, 77% 45%, 84% 48%, 89% 43%, 95% 47%, 100% 44%, 100% 100%, 0 100%);
+  }
   .env.pressed .seal { transform: translate(-50%, -50%) scale(1.08); }
-  .seal span {
-    position: absolute; inset: 0; border-radius: 50%; background: var(--red);
-    transition: transform .55s cubic-bezier(.5, 0, .75, .4), opacity .55s;
-  }
-  .seal span::after {
-    content: ""; position: absolute; inset: 20%; border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, .8);
-  }
-  .seal .l { clip-path: inset(0 50% 0 0); }
-  .seal .r { clip-path: inset(0 0 0 50%); }
-  .env.broken .seal .l { transform: translate(-35%, 160%) rotate(-40deg); opacity: 0; }
-  .env.broken .seal .r { transform: translate(35%, 160%) rotate(40deg); opacity: 0; }
+  .env.broken .seal { transition: transform .45s cubic-bezier(.2, .8, .3, 1); }
+  .env.broken .seal-bottom { transform: translate(-50%, -50%) translateY(3%) rotate(-7deg); }
+  /* 윗조각은 덮개 면보다 1px 앞에 두어 덮개와 함께 넘어가며 겹쳐 보이지 않게 함 */
+  .seal-top { transform: translate3d(-50%, -50%, 1px); }
+  .env.pressed .seal-top { transform: translate3d(-50%, -50%, 1px) scale(1.08); }
+  .env.broken .seal-top { transform: translate3d(-50%, -50%, 1px) translateY(-3%) rotate(10deg); }
 
   /* 편지 */
   .letter {
@@ -139,18 +148,20 @@
     perspective: 1600px;
     transition: transform 1s cubic-bezier(.3, .6, .2, 1);
   }
-  .letter.out { transform: translateY(calc(var(--w) * -.66)); }
+  /* 편지 아래 끝이 봉투 윗변에 닿을 때까지 꺼냄 */
+  .letter.out { transform: translateY(calc((var(--envH) + var(--lh)) / -2)); }
   .letter p { margin: 0; }
   .panel {
     position: absolute; left: 0; width: 100%;
-    box-sizing: border-box; padding: calc(var(--w) * .065);
+    box-sizing: border-box; padding: calc(var(--w) * .066) calc(var(--w) * .08);
     display: flex; flex-direction: column;
     background: var(--paper); color: var(--ink);
+    font-weight: 500;
     word-break: keep-all; overflow-wrap: break-word;
   }
-  .panel.top { top: 0; height: 100%; z-index: 2; }
+  .panel.top { top: 0; height: 100%; z-index: 2; justify-content: center; }
   .panel.bottom {
-    top: 100%; min-height: var(--lh); z-index: 1;
+    top: 100%; min-height: var(--lh); z-index: 1; justify-content: center;
     transform-origin: 50% 0; transform: rotateX(-180deg);
     -webkit-backface-visibility: hidden; backface-visibility: hidden;
     transition: transform 1.2s cubic-bezier(.25, .7, .2, 1);
@@ -168,46 +179,73 @@
   }
   .letter.unfold .panel.bottom::after { opacity: 0; }
 
-  /* 편지 윗면: 받는 분, 인사말 */
-  .to { display: flex; align-items: baseline; gap: .5em; }
-  .to-label { font-size: calc(var(--w) * .034); font-weight: 400; letter-spacing: .12em; }
-  .to-name { font-size: calc(var(--w) * .08); font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
-  .greet {
-    margin-top: calc(var(--w) * .035) !important;
-    font-size: calc(var(--w) * .034); line-height: 1.68; font-weight: 400;
+  /* 금색 테두리: 윗면은 위·양옆, 아랫면은 아래·양옆에 둘러 펼치면 하나의 틀이 됨 */
+  .frame {
+    position: absolute; pointer-events: none;
+    border: 0 solid; border-image: var(--gold) 1;
+  }
+  .panel.top .frame {
+    inset: calc(var(--w) * .024) calc(var(--w) * .024) 0;
+    border-width: 1px 1px 0;
+  }
+  .panel.bottom .frame {
+    inset: 0 calc(var(--w) * .024) calc(var(--w) * .024);
+    border-width: 0 1px 1px;
   }
 
-  /* 편지 아랫면: 일시, 장소, 연사 */
+  /* 편지 윗면: 받는 분, 인사말 */
+  .to { display: flex; align-items: baseline; gap: .6em; }
+  .to-label {
+    font-size: calc(var(--w) * .03); font-weight: 600; letter-spacing: .2em;
+    color: var(--red);
+  }
+  .to-name {
+    font-size: calc(var(--w) * .084); font-weight: 800;
+    letter-spacing: -.025em; line-height: 1.15;
+  }
+  .greet {
+    margin-top: calc(var(--w) * .036) !important;
+    padding-top: calc(var(--w) * .036);
+    border-top: 1px solid rgba(0, 0, 0, .14);
+    font-size: calc(var(--w) * .037); line-height: 1.75; letter-spacing: -.01em;
+    text-wrap: pretty;
+  }
+  .theme { color: var(--sea-bright); font-weight: 600; }
+
+  /* 편지 아랫면: 일시, 장소, 연사 (이름표 칸을 맞춰 한 줄기로 정렬) */
+  .info { margin: 0; }
+  .info > div {
+    display: grid; grid-template-columns: calc(var(--w) * .105) 1fr;
+    align-items: baseline; column-gap: calc(var(--w) * .025);
+    padding: calc(var(--w) * .013) 0;
+  }
+  .info > div:first-child { padding-top: 0; }
+  .info > div + div { border-top: 1px solid rgba(0, 0, 0, .14); }
+  .info > div:last-child { border-bottom: 1px solid rgba(0, 0, 0, .14); }
+  .info dt, .speakers dt { font-size: calc(var(--w) * .033); letter-spacing: .12em; opacity: .5; }
+  .info dd { margin: 0; font-size: calc(var(--w) * .04); line-height: 1.5; }
   .date {
-    font-size: calc(var(--w) * .095); font-weight: 700; color: var(--red);
-    letter-spacing: -.03em; line-height: 1;
+    font-size: calc(var(--w) * .088); font-weight: 800; color: var(--red);
+    letter-spacing: -.035em; line-height: 1.1;
   }
-  .date span {
-    font-size: .36em; font-weight: 400; color: var(--ink);
-    letter-spacing: .02em; margin-left: .5em;
+  .time {
+    margin-top: calc(var(--w) * .01) !important;
+    font-size: calc(var(--w) * .038); line-height: 1.35; letter-spacing: -.005em;
   }
-  .place {
-    margin-top: calc(var(--w) * .025) !important;
-    font-size: calc(var(--w) * .038); line-height: 1.6;
-  }
+  .time .dot { margin: 0 .45em; opacity: .4; }
   .speakers {
-    margin-top: calc(var(--w) * .055);
-    padding-top: calc(var(--w) * .04);
-    border-top: 1px solid rgba(0, 0, 0, .16);
+    margin: 0; display: grid; grid-template-columns: auto auto;
+    justify-content: start; align-items: baseline;
+    row-gap: 0; column-gap: calc(var(--w) * .07);
   }
-  .speakers-label { font-size: calc(var(--w) * .03); letter-spacing: .08em; opacity: .55; }
-  .speakers dl {
-    margin: calc(var(--w) * .025) 0 0;
-    display: grid; grid-template-columns: 1fr 1fr;
-    row-gap: calc(var(--w) * .022); column-gap: calc(var(--w) * .04);
-  }
-  .speakers dl div { display: flex; align-items: baseline; gap: .6em; }
-  .speakers dt { font-size: calc(var(--w) * .03); opacity: .55; }
-  .speakers dd { margin: 0; font-size: calc(var(--w) * .042); font-weight: 600; }
+  .speakers div { display: flex; align-items: baseline; gap: .5em; }
+  .speakers dt { letter-spacing: .04em; }
+  .speakers dd { margin: 0; font-size: calc(var(--w) * .042); font-weight: 600; line-height: 1.4; }
   .sign {
-    margin-top: calc(var(--w) * .07) !important;
-    text-align: right; font-size: calc(var(--w) * .036); letter-spacing: .02em;
+    margin-top: calc(var(--w) * .018) !important;
+    text-align: right; font-size: calc(var(--w) * .038); font-weight: 600; letter-spacing: .01em;
   }
+  .sign .tedx { color: var(--red); }
 
   .top-layer { position: fixed; inset: 0; z-index: 9; pointer-events: none; }
 
@@ -216,12 +254,13 @@
     position: fixed; left: 50%; z-index: 10;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 7vh);
     transform: translateX(-50%);
-    font-family: inherit; font-size: 14px; font-weight: 300; letter-spacing: .03em;
+    font-family: inherit; font-size: 14px; font-weight: 400; letter-spacing: .03em;
     color: var(--paper); white-space: nowrap;
     opacity: 0; transition: opacity .8s; pointer-events: none;
   }
   .hint.show { opacity: .8; }
   .replay {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 3vh);
     background: none; border: 1px solid rgba(255, 255, 255, .45); border-radius: 999px;
     padding: 10px 20px; cursor: pointer;
   }
@@ -244,22 +283,37 @@
 
         <div class="letter" id="letter">
           <div class="panel bottom" id="letterBottom">
-            <p class="date">11월 21일<span>토요일</span></p>
-            <p class="place">홍익대학교 서울캠퍼스<br>홍문관 지하 4층 가람홀</p>
-            <div class="speakers">
-              <p class="speakers-label">연사</p>
-              <dl>
-                <div><dt>환경</dt><dd>홍다경</dd></div>
-                <div><dt>예술</dt><dd>배진희</dd></div>
-                <div><dt>사회</dt><dd>노경철</dd></div>
-                <div><dt>기술</dt><dd>백영재</dd></div>
-              </dl>
-            </div>
-            <p class="sign">TEDxHongikU 드림</p>
+            <dl class="info">
+              <div>
+                <dt>일시:</dt>
+                <dd>
+                  <p class="date">11월 21일</p>
+                  <p class="time">토요일<span class="dot" aria-hidden="true">·</span>오후 2시 – 5시 10분</p>
+                </dd>
+              </div>
+              <div>
+                <dt>장소</dt>
+                <dd>홍익대학교 서울캠퍼스<br>홍문관 지하 4층 가람홀</dd>
+              </div>
+              <div>
+                <dt>연사</dt>
+                <dd>
+                  <dl class="speakers">
+                    <div><dt>환경</dt><dd>홍다경</dd></div>
+                    <div><dt>예술</dt><dd>배진희</dd></div>
+                    <div><dt>사회</dt><dd>노경철</dd></div>
+                    <div><dt>기술</dt><dd>백영재</dd></div>
+                  </dl>
+                </dd>
+              </div>
+            </dl>
+            <p class="sign"><span class="tedx">TEDx</span>HongikU 드림</p>
+            <span class="frame" aria-hidden="true"></span>
           </div>
-          <div class="panel top">
+          <div class="panel top" id="letterTop">
             <p class="to"><span class="to-label">TO.</span><span class="to-name">허성범 님</span></p>
-            <p class="greet">안녕하십니까. TEDxHongikU는 ‘표류’라는 테마 아래 환경, 예술, 사회, 기술 네 분야의 연사님을 모시고 강연을 엽니다. 바쁘시겠지만 귀한 걸음 하시어 자리를 빛내주시기를 정중히 청합니다.</p>
+            <p class="greet" id="greet">안녕하십니까. 이번 2026 TEDxHongikU 강연은, <span class="theme">‘표류’</span>라는 테마 아래 환경, 예술, 사회, 기술 네 분야의 연사를 모시고 강연을 진행하게 되었습니다. 바쁘시겠지만, 귀한 걸음 하시어 자리를 빛내주시기를 정중히 청합니다.</p>
+            <span class="frame" aria-hidden="true"></span>
           </div>
         </div>
 
@@ -277,8 +331,9 @@
             </svg>
           </div>
           <div class="flap-face flap-back"></div>
+          <div class="seal seal-top" aria-hidden="true"></div>
         </div>
-        <div class="seal" aria-hidden="true"><span class="l"></span><span class="r"></span></div>
+        <div class="seal seal-bottom" aria-hidden="true"></div>
       </div>
     </div>
   </div>
@@ -314,6 +369,8 @@
   const replay = document.getElementById('replay');
   const topLayer = document.getElementById('topLayer');
   const front = document.getElementById('front');
+  const letterTop = document.getElementById('letterTop');
+  const greet = document.getElementById('greet');
 
   const wait = ms => new Promise(r => setTimeout(r, ms * D));
   const tween = (dur, fn, ease = t => t) => new Promise(res => {
@@ -363,6 +420,22 @@
   }
   placeFront();
 
+  // 편지 윗면은 봉투에 들어갈 높이로 고정돼 있으므로,
+  // 대체 서체 등으로 인사말이 넘치면 글자 크기를 조금씩 줄여 맞춤
+  function fitTop() {
+    greet.style.fontSize = '';
+    const cs = getComputedStyle(letterTop);
+    const room = letterTop.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const used = () => greet.offsetTop + greet.offsetHeight - letterTop.firstElementChild.offsetTop;
+    let f = parseFloat(getComputedStyle(greet).fontSize);
+    while (used() > room && f > 9) {
+      f -= 0.25;
+      greet.style.fontSize = f + 'px';
+    }
+  }
+  fitTop();
+  if (document.fonts) document.fonts.ready.then(fitTop);
+
   // 표류 + 흔들림 (기존 3.4초의 0.9배 속도)
   let state = 'drifting';
   let amp = reduce ? 0 : 1, ampTarget = reduce ? 0 : 1;
@@ -394,9 +467,12 @@
   function finalTransform() {
     const { left, top, w, h } = baseRect;
     const total = h + letterBottom.offsetHeight;
-    const S = Math.min(1.25, (innerHeight * 0.84) / total, (innerWidth * 0.9) / w);
+    // 아래 '다시 보기' 버튼 자리를 비워 두고, 그 위 영역의 가운데에 편지를 놓음
+    const areaTop = innerHeight * 0.05;
+    const areaH = replay.getBoundingClientRect().top - 12 - areaTop;
+    const S = Math.min(1.25, areaH / total, (innerWidth * 0.9) / w);
     const tx = (innerWidth - w * S) / 2 - left;
-    const ty = (innerHeight - total * S) / 2 - top;
+    const ty = areaTop + (areaH - total * S) / 2 - top;
     return `translate(${tx}px, ${ty}px) scale(${S})`;
   }
 
@@ -453,6 +529,7 @@
 
   addEventListener('resize', () => {
     placeFront();
+    fitTop();
     if (baseRect && letter.parentElement === topLayer) {
       if (letterAnim) { letterAnim.cancel(); letterAnim = null; }
       letter.style.transform = finalTransform();
