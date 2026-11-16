@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>가람홀 내빈 좌석 제안 - 배진희 연사님</title>
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="가람홀 내빈 좌석 제안 - 배진희 연사님">
+<meta property="og:description" content="TEDxHongikU 2026 · 내빈 좌석을 끌어서 옮기고 제안해 주세요.">
+<style>
+  :root { --zone: #c98200; --seat: 116px; --ink: #1d1d1f; --muted: #6b6b70; --bg: #fbf8f3; --line: #e6dfd4; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    -webkit-tap-highlight-color: transparent; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 48px; }
+  header { text-align: center; margin-bottom: 18px; }
+  .brand { color: #e62b1e; font-weight: 700; letter-spacing: 3px; font-size: 13px; }
+  h1 { margin: 6px 0 4px; font-size: 26px; letter-spacing: -0.3px; }
+  .sub { color: var(--muted); font-size: 15px; }
+  .sub b { color: var(--zone); }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 20px; align-items: start; }
+  .layout > * { min-width: 0; }
+  @media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 520px) {
+    .wrap { padding: 20px 10px 40px; } .card { padding: 14px 10px; } h1 { font-size: 22px; }
+    .rowlabel { font-size: 16px; } button { padding: 9px 14px; font-size: 13px; }
+  }
+
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+  .guide { font-size: 14px; line-height: 1.65; color: #3a3a3e; }
+  .guide h2, .map h2 { font-size: 14px; margin: 0 0 8px; color: var(--ink); }
+  .guide ol { margin: 0; padding-left: 18px; }
+  .guide li + li { margin-top: 4px; }
+
+  .hall { overflow-x: auto; }
+  .stage { margin: 0 auto 18px; max-width: 520px; height: 38px; border-radius: 0 0 22px 22px;
+    background: linear-gradient(#2a1d14, #6b4a2f); border-top: 4px solid #e62b1e;
+    color: #f5e9da; font-weight: 700; letter-spacing: 4px; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; }
+  .grid { display: grid; justify-content: center; column-gap: 6px; row-gap: 8px; }
+  .rowlabel { display: flex; align-items: center; justify-content: center; font-weight: 700;
+    font-size: 20px; color: #3a3a3e; width: 28px; }
+  .aisle-gap { height: 14px; }
+  .edge { display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl;
+    color: #a3a6ab; font-size: 12px; letter-spacing: 4px; width: 26px; border-radius: 10px;
+    background: repeating-linear-gradient(45deg, #f1ece4 0 6px, #f7f3ec 6px 12px); }
+  .colhead { text-align: center; font-size: 11px; color: #a3a6ab; padding-bottom: 2px; }
+  .zonebox { border: 2.5px dashed var(--zone); border-radius: 18px; }
+  .zonetag { margin-top: 10px; display: flex; justify-content: center; }
+  .zonetag span { white-space: nowrap; }
+  .zonetag span { display: inline-block; background: var(--zone); color: #fff; font-weight: 700;
+    font-size: 14px; padding: 6px 16px; border-radius: 999px; }
+
+  .seat { position: relative; width: var(--seat); height: calc(var(--seat) * 0.92); }
+  .seat svg.chair { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .seat .num { position: absolute; left: 0; right: 0; top: 17%; text-align: center; color: #fff;
+    font-weight: 700; font-size: calc(var(--seat) * 0.2); pointer-events: none; }
+  .seat.other { opacity: 0.38; }
+  .seat.mine { cursor: pointer; }
+  .seat.mine.over::after, .seat.mine.target::after { content: ""; position: absolute; inset: -4px;
+    border-radius: 14px; border: 3px solid var(--zone); background: rgba(255,255,255,0.15); }
+  .seat.mine.target::after { border-style: dashed; }
+
+  .chip { position: absolute; left: 2%; right: 2%; bottom: 3%; height: 36%;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; border: 2px solid var(--zone); border-radius: 9px;
+    font-weight: 700; font-size: calc(var(--seat) * 0.16); letter-spacing: -0.3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12); cursor: grab; touch-action: none; user-select: none;
+    -webkit-user-select: none; white-space: nowrap; }
+  .chip.tbd { color: var(--muted); border-style: dashed; }
+  .chip.moved::before { content: ""; position: absolute; top: -5px; right: -5px; width: 12px; height: 12px;
+    border-radius: 50%; background: #e62b1e; border: 2px solid #fff; }
+  .chip.selected { background: var(--zone); color: #fff; transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25); }
+  .chip.lifting { opacity: 0.25; }
+  .ghost { position: fixed; z-index: 50; pointer-events: none; transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.3); cursor: grabbing; }
+  .empty-hint { position: absolute; left: 2%; right: 2%; bottom: 3%; height: 36%; display: flex;
+    align-items: center; justify-content: center; border: 2px dashed rgba(255,255,255,0.7);
+    border-radius: 9px; color: rgba(255,255,255,0.9); font-size: calc(var(--seat) * 0.12); pointer-events: none; }
+
+  .status { min-height: 22px; text-align: center; margin: 14px 0 0; font-size: 14px; color: var(--muted); }
+  .status b { color: var(--zone); }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
+  button { font: inherit; font-size: 14px; font-weight: 700; border-radius: 999px; padding: 10px 18px;
+    border: 1.5px solid #d6cfc4; background: #fff; color: var(--ink); cursor: pointer; }
+  button.primary { background: var(--zone); border-color: var(--zone); color: #fff; }
+  button:disabled { opacity: 0.4; cursor: default; }
+
+  .side { display: grid; gap: 16px; }
+  .map svg { width: 100%; max-width: 320px; margin: 0 auto; height: auto; display: block; }
+  .map p { margin: 8px 0 0; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .result textarea { width: 100%; height: 190px; resize: vertical; border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px; font: inherit; font-size: 13px; line-height: 1.6; background: #fdfbf8; }
+  .result h2 { font-size: 14px; margin: 0 0 8px; }
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
+    background: #1d1d1f; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 14px;
+    opacity: 0; transition: all .25s; pointer-events: none; z-index: 60; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">TEDxHongikU 2026</div>
+    <h1>가람홀 내빈 좌석 제안</h1>
+    <div class="sub" id="sub"></div>
+  </header>
+
+  <div class="layout">
+    <main class="card">
+      <div class="hall">
+        <div class="stage">▲ STAGE · 무대 방향</div>
+        <div class="grid" id="grid"></div>
+      </div>
+      <div class="status" id="status">이름표를 끌어서 원하는 자리에 놓아 주세요.</div>
+      <div class="actions">
+        <button id="undo" disabled>한 단계 되돌리기</button>
+        <button id="reset">처음 배치로</button>
+        <button id="savePng" class="primary">제안 이미지 저장</button>
+        <button id="copyText" class="primary">배치 내용 복사</button>
+      </div>
+    </main>
+
+    <aside class="side">
+      <section class="card guide">
+        <h2>사용 방법</h2>
+        <ol>
+          <li>이름표를 <b>끌어서</b> 원하는 좌석에 놓으면 자리가 옮겨집니다.</li>
+          <li>다른 분 자리에 놓으면 <b>두 분의 자리가 서로 바뀝니다.</b></li>
+          <li>휴대폰에서는 이름표를 <b>한 번 누르고</b>, 옮길 좌석을 누르셔도 됩니다.</li>
+          <li>바뀐 자리에는 <span style="color:#e62b1e">●</span> 표시가 붙습니다.</li>
+          <li>완료 후 <b>제안 이미지 저장</b> 또는 <b>배치 내용 복사</b>로 저희에게 보내 주세요.</li>
+        </ol>
+      </section>
+      <section class="card map">
+        <h2>전체 객석에서 내 구역 위치</h2>
+        <div id="minimap"></div>
+        <p>가운데 구역 A–P열 중 색으로 표시된 곳이 연사님 내빈 구역입니다. 다른 구역은 이 화면에서 바꿀 수 없습니다.</p>
+      </section>
+      <section class="card result">
+        <h2>배치 내용</h2>
+        <textarea id="resultText" readonly></textarea>
+      </section>
+    </aside>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const D = {"speaker":"배진희","color":"#1d9a6c","rows":["C","D","E","F"],"cols":[17,18,19],"initial":{"C-17":"이정훈님","C-18":"엄규희님","C-19":"이석훈님","D-17":"서혜인님","D-18":"이유진님","D-19":"정명훈님","E-17":"김시율님","E-18":"허승범님","E-19":"조성배님","F-17":"김민아님"},"gapAfter":["C","F"],"rowColor":{"C":"red","D":"red","E":"red","F":"gray"},"neighborL":16,"neighborR":20,"allRows":["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P"],"allSeats":{"A":[9,10,11,12,13,14,15,16,17],"P":[9,10,11,19,20,21],"B":[9,10,11,12,13,14,15,16,17,18,19,20,21],"C":[9,10,11,12,13,14,15,16,17,18,19,20,21],"D":[9,10,11,12,13,14,15,16,17,18,19,20,21],"E":[9,10,11,12,13,14,15,16,17,18,19,20,21],"F":[9,10,11,12,13,14,15,16,17,18,19,20,21],"G":[9,10,11,12,13,14,15,16,17,18,19,20,21],"H":[9,10,11,12,13,14,15,16,17,18,19,20,21],"I":[9,10,11,12,13,14,15,16,17,18,19,20,21],"J":[9,10,11,12,13,14,15,16,17,18,19,20,21],"K":[9,10,11,12,13,14,15,16,17,18,19,20,21],"L":[9,10,11,12,13,14,15,16,17,18,19,20,21],"M":[9,10,11,12,13,14,15,16,17,18,19,20,21],"N":[9,10,11,12,13,14,15,16,17,18,19,20,21],"O":[9,10,11,12,13,14,15,16,17,18,19,20,21]}};
+const STORE = 'tedx2026-seat-proposal-' + D.speaker;
+document.documentElement.style.setProperty('--zone', D.color);
+document.getElementById('sub').innerHTML =
+  '<b>' + D.speaker + ' 연사님</b> 내빈 구역 · ' + D.rows[0] + '–' + D.rows[D.rows.length - 1] + '열 ' +
+  D.cols[0] + (D.cols.length > 1 ? '–' + D.cols[D.cols.length - 1] : '') + '번';
+
+const ids = [];
+D.rows.forEach(r => D.cols.forEach(c => ids.push(r + '-' + c)));
+let state = load() || Object.assign({}, D.initial);
+let history = [];
+let selected = null;
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE));
+    if (!s) return null;
+    const names = Object.values(s).sort().join('|');
+    if (names !== Object.values(D.initial).sort().join('|')) return null; // 명단이 바뀌면 초기화
+    if (Object.keys(s).some(k => !ids.includes(k))) return null;
+    return s;
+  } catch (e) { return null; }
+}
+function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+
+// ---------- 의자 그림 ----------
+const PAL = {
+  red:  { back: '#c8202f', dark: '#8f1420', seat: '#e0414c', arm: '#3b3b3f' },
+  gray: { back: '#8c9097', dark: '#5f636a', seat: '#a9adb3', arm: '#3b3b3f' },
+  blue: { back: '#4f9fe0', dark: '#2f74b3', seat: '#7cbcf0', arm: '#3b3b3f' },
+};
+function chairSvg(p) {
+  return '<svg class="chair" viewBox="0 0 110 100" preserveAspectRatio="none">' +
+    '<rect x="3.5" y="41" width="12" height="57" rx="5" fill="' + p.arm + '"/>' +
+    '<rect x="94.5" y="41" width="12" height="57" rx="5" fill="' + p.arm + '"/>' +
+    '<rect x="17" y="62" width="76" height="36" rx="12" fill="' + p.dark + '"/>' +
+    '<rect x="20" y="62" width="70" height="29" rx="11" fill="' + p.seat + '"/>' +
+    '<path d="M17 64 L17 16 Q17 2 31 2 L79 2 Q93 2 93 16 L93 64 Z" fill="' + p.back + '" stroke="' + p.dark + '" stroke-width="3"/>' +
+    '<line x1="29" y1="11" x2="81" y2="11" stroke="#fff" stroke-opacity=".35" stroke-width="3.5" stroke-linecap="round"/>' +
+    '</svg>';
+}
+
+// ---------- 화면 구성 ----------
+const grid = document.getElementById('grid');
+const hasL = D.neighborL != null, hasR = D.neighborR != null;
+const tracks = ['28px', '26px'];
+if (hasL) tracks.push('var(--seat)');
+tracks.push('repeat(' + D.cols.length + ', var(--seat))');
+if (hasR) tracks.push('var(--seat)');
+tracks.push('26px', '28px');
+grid.style.gridTemplateColumns = tracks.join(' ');
+const firstZoneCol = 3 + (hasL ? 1 : 0);
+const lastZoneCol = firstZoneCol + D.cols.length; // exclusive
+const seatEls = {};
+
+function place(el, row, col, span) {
+  el.style.gridRow = row; el.style.gridColumn = span ? col + ' / span ' + span : col;
+  grid.appendChild(el); return el;
+}
+function div(cls, html) { const d = document.createElement('div'); d.className = cls; if (html != null) d.innerHTML = html; return d; }
+
+// 줄 배치: 헤더 1줄, 이후 열마다 1줄 (C와 D 사이 통로 1줄)
+let gr = 2;
+const rowLine = {};
+D.rows.forEach((r, i) => {
+  if (i > 0 && D.gapAfter.includes(D.rows[i - 1])) { place(div('aisle-gap'), gr, 1); gr++; }
+  rowLine[r] = gr++;
+});
+const lastLine = gr;
+
+place(div('colhead', hasL ? '다른 구역' : ''), 1, firstZoneCol - 1);
+if (hasR) place(div('colhead', '다른 구역'), 1, lastZoneCol);
+// 통로 표시 (구역이 가장자리일 때)
+const edgeL = place(div('edge', D.neighborL == null ? '통로' : ''), '2 / ' + lastLine, 2);
+const edgeR = place(div('edge', D.neighborR == null ? '통로' : ''), '2 / ' + lastLine, lastZoneCol + (hasR ? 1 : 0));
+if (D.neighborL != null) edgeL.style.visibility = 'hidden';
+if (D.neighborR != null) edgeR.style.visibility = 'hidden';
+
+D.rows.forEach(r => {
+  const line = rowLine[r];
+  place(div('rowlabel', r), line, 1);
+  place(div('rowlabel', r), line, lastZoneCol + (hasR ? 1 : 0) + 1);
+  const pal = PAL[D.rowColor[r]];
+  if (hasL) place(div('seat other', chairSvg(pal) + '<div class="num">' + D.neighborL + '</div>'), line, firstZoneCol - 1);
+  if (hasR) place(div('seat other', chairSvg(pal) + '<div class="num">' + D.neighborR + '</div>'), line, lastZoneCol);
+  D.cols.forEach((c, k) => {
+    const id = r + '-' + c;
+    const s = div('seat mine', chairSvg(pal) + '<div class="num">' + c + '</div>');
+    s.dataset.id = id;
+    seatEls[id] = place(s, line, firstZoneCol + k);
+  });
+});
+// 구역 테두리와 이름 띠
+const box = place(div('zonebox'), '2 / ' + lastLine, firstZoneCol, D.cols.length);
+box.style.margin = '-8px -5px'; box.style.pointerEvents = 'none';
+place(div('zonetag', '<span>' + D.speaker + ' 연사 내빈</span>'), lastLine, firstZoneCol, D.cols.length);
+
+function fitSeats() {
+  const n = D.cols.length + (hasL ? 1 : 0) + (hasR ? 1 : 0);
+  const fixed = 28 * 2 + 26 * 2 + (n + 3) * 6 + 12; // 열 이름·통로·간격
+  const s = Math.max(54, Math.min(124, Math.floor((grid.parentElement.clientWidth - fixed) / n)));
+  document.documentElement.style.setProperty('--seat', s + 'px');
+}
+window.addEventListener('resize', fitSeats);
+fitSeats();
+
+function render() {
+  ids.forEach(id => {
+    const el = seatEls[id];
+    el.querySelectorAll('.chip, .empty-hint').forEach(n => n.remove());
+    el.classList.toggle('target', !!selected && selected !== id);
+    const name = state[id];
+    if (name) {
+      const chip = div('chip' + (name === '미정' ? ' tbd' : ''), name);
+      if (state[id] !== D.initial[id]) chip.classList.add('moved');
+      if (selected === id) chip.classList.add('selected');
+      el.appendChild(chip);
+    } else if (selected) {
+      el.appendChild(div('empty-hint', '여기로'));
+    }
+  });
+  document.getElementById('undo').disabled = history.length === 0;
+  document.getElementById('resultText').value = resultText();
+}
+
+function nm(id) { return state[id] || '빈 자리'; }
+function swap(a, b) {
+  if (a === b) return;
+  history.push(Object.assign({}, state));
+  const na = state[a], nb = state[b];
+  if (nb) state[a] = nb; else delete state[a];
+  if (na) state[b] = na; else delete state[b];
+  save();
+  setStatus(nb ? '<b>' + na + '</b> ↔ <b>' + nb + '</b> 자리를 바꿨습니다. (' + a + ' ↔ ' + b + ')'
+               : '<b>' + na + '</b>을(를) ' + b + ' 자리로 옮겼습니다.');
+}
+function setStatus(h) { document.getElementById('status').innerHTML = h; }
+
+// ---------- 끌어서 놓기 / 눌러서 바꾸기 ----------
+let drag = null;
+grid.addEventListener('pointerdown', e => {
+  const seat = e.target.closest('.seat.mine');
+  if (!seat) return;
+  const chip = e.target.closest('.chip');
+  if (!chip) { // 빈 좌석을 누름
+    if (selected) { const from = selected; selected = null; swap(from, seat.dataset.id); render(); }
+    return;
+  }
+  e.preventDefault();
+  drag = { id: seat.dataset.id, chip, x: e.clientX, y: e.clientY, moving: false, ghost: null, over: null, pid: e.pointerId };
+  try { chip.setPointerCapture(e.pointerId); } catch (err) {}
+});
+window.addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.pid) return;
+  if (!drag.moving) {
+    if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 6) return;
+    drag.moving = true;
+    selected = null; ids.forEach(id => seatEls[id].classList.remove('target'));
+    const g = drag.chip.cloneNode(true);
+    g.classList.add('ghost'); g.classList.remove('selected', 'moved');
+    const r = drag.chip.getBoundingClientRect();
+    g.style.width = r.width + 'px'; g.style.height = r.height + 'px';
+    g.style.left = '0'; g.style.right = 'auto'; g.style.bottom = 'auto';
+    document.body.appendChild(g); drag.ghost = g;
+    drag.chip.classList.add('lifting');
+  }
+  drag.ghost.style.left = e.clientX + 'px'; drag.ghost.style.top = e.clientY + 'px';
+  const over = seatAt(e.clientX, e.clientY);
+  if (over !== drag.over) {
+    if (drag.over) seatEls[drag.over].classList.remove('over');
+    if (over) seatEls[over].classList.add('over');
+    drag.over = over;
+  }
+});
+function seatAt(x, y) {
+  const el = document.elementFromPoint(x, y);
+  const s = el && el.closest && el.closest('.seat.mine');
+  return s ? s.dataset.id : null;
+}
+function endDrag(e) {
+  if (!drag || e.pointerId !== drag.pid) return;
+  const d = drag; drag = null;
+  if (d.moving) {
+    d.ghost.remove();
+    if (d.over) seatEls[d.over].classList.remove('over');
+    const to = seatAt(e.clientX, e.clientY);
+    if (to && to !== d.id) swap(d.id, to);
+    render();
+    return;
+  }
+  // 이동 없이 뗌 = 누르기
+  if (selected === d.id) { selected = null; setStatus('선택을 취소했습니다.'); }
+  else if (selected) { const from = selected; selected = null; swap(from, d.id); }
+  else { selected = d.id; setStatus('<b>' + state[d.id] + '</b> 선택됨 · 옮길 좌석을 눌러 주세요.'); }
+  render();
+}
+window.addEventListener('pointerup', endDrag);
+window.addEventListener('pointercancel', e => { if (drag && drag.ghost) drag.ghost.remove(); drag = null; render(); });
+
+document.getElementById('undo').onclick = () => {
+  if (!history.length) return;
+  state = history.pop(); selected = null; save(); render(); setStatus('한 단계 되돌렸습니다.');
+};
+document.getElementById('reset').onclick = () => {
+  history.push(Object.assign({}, state));
+  state = Object.assign({}, D.initial); selected = null; save(); render(); setStatus('처음 배치로 되돌렸습니다. (한 단계 되돌리기로 취소 가능)');
+};
+
+// ---------- 결과 텍스트 ----------
+function changedCount() { return ids.filter(id => (state[id] || '') !== (D.initial[id] || '')).length; }
+function resultText() {
+  const lines = ['[TEDxHongikU 2026 가람홀 내빈 좌석 제안]', D.speaker + ' 연사님 내빈 구역', ''];
+  D.rows.forEach(r => {
+    lines.push(r + '열  ' + D.cols.map(c => c + '번 ' + nm(r + '-' + c)).join(' / '));
+  });
+  const n = changedCount();
+  lines.push('', n ? '처음 배치에서 바뀐 좌석: ' + n + '곳' : '처음 배치 그대로입니다.');
+  return lines.join('\n');
+}
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+document.getElementById('copyText').onclick = async () => {
+  const text = resultText();
+  try { await navigator.clipboard.writeText(text); toast('배치 내용을 복사했습니다. 메시지에 붙여넣어 보내 주세요.'); }
+  catch (e) {
+    const ta = document.getElementById('resultText'); ta.focus(); ta.select();
+    try { document.execCommand('copy'); toast('배치 내용을 복사했습니다.'); }
+    catch (err) { toast('오른쪽 배치 내용 칸을 직접 복사해 주세요.'); }
+  }
+};
+
+// ---------- 이미지 저장 ----------
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function proposalSvg() {
+  const S = 120, H = 112, G = 10, PADX = 70, top = 150;
+  const n = D.cols.length;
+  const W = Math.max(560, PADX * 2 + n * S + (n - 1) * G);
+  const x0 = (W - (n * S + (n - 1) * G)) / 2;
+  let y = top, rowsY = {};
+  D.rows.forEach((r, i) => { if (i > 0 && D.gapAfter.includes(D.rows[i - 1])) y += 18; rowsY[r] = y; y += H + G; });
+  const HH = y + 90;
+  const F = 'font-family="Malgun Gothic, Apple SD Gothic Neo, Noto Sans KR, sans-serif"';
+  let s = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + HH + '" viewBox="0 0 ' + W + ' ' + HH + '" ' + F + '>';
+  s += '<rect width="100%" height="100%" fill="#fbf8f3"/>';
+  s += '<text x="' + W / 2 + '" y="34" text-anchor="middle" font-size="13" font-weight="700" fill="#e62b1e" letter-spacing="3">TEDxHongikU 2026</text>';
+  s += '<text x="' + W / 2 + '" y="66" text-anchor="middle" font-size="24" font-weight="700" fill="#1d1d1f">가람홀 내빈 좌석 제안 · ' + esc(D.speaker) + ' 연사님</text>';
+  s += '<rect x="' + (W / 2 - 180) + '" y="88" width="360" height="34" rx="14" fill="#4a3322"/><rect x="' + (W / 2 - 180) + '" y="86" width="360" height="5" fill="#e62b1e"/>';
+  s += '<text x="' + W / 2 + '" y="111" text-anchor="middle" font-size="13" font-weight="700" fill="#f5e9da" letter-spacing="4">▲ STAGE · 무대 방향</text>';
+  s += '<rect x="' + (x0 - 10) + '" y="' + (top - 10) + '" width="' + (n * S + (n - 1) * G + 20) + '" height="' + (y - top + 10) + '" rx="18" fill="none" stroke="' + D.color + '" stroke-width="3" stroke-dasharray="9 6"/>';
+  D.rows.forEach(r => {
+    const yy = rowsY[r], p = PAL[D.rowColor[r]];
+    s += '<text x="' + (x0 - 34) + '" y="' + (yy + H / 2 + 8) + '" text-anchor="middle" font-size="22" font-weight="700" fill="#3a3a3e">' + r + '</text>';
+    s += '<text x="' + (x0 + n * S + (n - 1) * G + 34) + '" y="' + (yy + H / 2 + 8) + '" text-anchor="middle" font-size="22" font-weight="700" fill="#3a3a3e">' + r + '</text>';
+    D.cols.forEach((c, k) => {
+      const xx = x0 + k * (S + G), id = r + '-' + c, name = state[id];
+      s += '<g transform="translate(' + xx + ' ' + yy + ') scale(' + (S / 110) + ' ' + (H / 100) + ')">' +
+        chairSvg(p).replace('<svg class="chair" viewBox="0 0 110 100" preserveAspectRatio="none">', '').replace('</svg>', '') + '</g>';
+      s += '<text x="' + (xx + S / 2) + '" y="' + (yy + H * 0.36) + '" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">' + c + '</text>';
+      if (name) {
+        const moved = name !== D.initial[id];
+        s += '<rect x="' + (xx + 3) + '" y="' + (yy + H * 0.6) + '" width="' + (S - 6) + '" height="' + (H * 0.36) + '" rx="9" fill="#fff" stroke="' + D.color + '" stroke-width="2.5"' + (name === '미정' ? ' stroke-dasharray="5 4"' : '') + '/>';
+        s += '<text x="' + (xx + S / 2) + '" y="' + (yy + H * 0.6 + H * 0.36 / 2 + 7) + '" text-anchor="middle" font-size="19" font-weight="700" fill="' + (name === '미정' ? '#6b6b70' : '#1d1d1f') + '">' + esc(name) + '</text>';
+        if (moved) s += '<circle cx="' + (xx + S - 4) + '" cy="' + (yy + H * 0.6) + '" r="7" fill="#e62b1e" stroke="#fff" stroke-width="2.5"/>';
+      }
+    });
+  });
+  const n2 = changedCount();
+  s += '<text x="' + W / 2 + '" y="' + (HH - 40) + '" text-anchor="middle" font-size="15" fill="#6b6b70">' +
+    (n2 ? '<tspan fill="#e62b1e">●</tspan> 표시: 처음 배치에서 바뀐 좌석 (' + n2 + '곳)' : '처음 배치 그대로입니다.') + '</text>';
+  return s + '</svg>';
+}
+document.getElementById('savePng').onclick = () => {
+  const svg = proposalSvg();
+  const img = new Image();
+  const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
+  img.onload = () => {
+    const scale = 2, c = document.createElement('canvas');
+    c.width = img.width * scale; c.height = img.height * scale;
+    const ctx = c.getContext('2d'); ctx.scale(scale, scale); ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+    c.toBlob(b => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download = '내빈좌석제안_' + D.speaker + '.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      toast('이미지를 저장했습니다. 저희에게 보내 주세요.');
+    }, 'image/png');
+  };
+  img.onerror = () => toast('이미지 저장에 실패했습니다. 배치 내용 복사를 이용해 주세요.');
+  img.src = url;
+};
+
+// ---------- 전체 객석 미니맵 ----------
+(function minimap() {
+  const cw = 13, rh = 10, ox = 26, oy = 26;
+  let y = oy, s = '';
+  const zoneRows = D.rows;
+  const rows = D.allRows;
+  const H = oy + rows.length * rh + 2 * 4 + 10;
+  s += '<svg viewBox="0 0 ' + (ox * 2 + 13 * cw) + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">';
+  s += '<rect x="' + (ox + 10) + '" y="4" width="' + (13 * cw - 20) + '" height="12" rx="4" fill="#4a3322"/>';
+  s += '<text x="' + (ox + 13 * cw / 2) + '" y="13" text-anchor="middle" font-size="7" font-weight="700" fill="#f5e9da" letter-spacing="1.5">STAGE</text>';
+  rows.forEach((r, i) => {
+    if (i > 0 && D.gapAfter.includes(rows[i - 1])) y += 4;
+    s += '<text x="' + (ox - 8) + '" y="' + (y + 6.5) + '" text-anchor="middle" font-size="6.5" font-weight="700" fill="#8a8d93">' + r + '</text>';
+    D.allSeats[r].forEach(c => {
+      const mine = zoneRows.includes(r) && D.cols.includes(c);
+      s += '<rect x="' + (ox + (c - 9) * cw + 1.5) + '" y="' + (y + 1) + '" width="' + (cw - 3) + '" height="' + (rh - 3) + '" rx="2" fill="' +
+        (mine ? D.color : '#d9d4cc') + '"/>';
+    });
+    y += rh;
+  });
+  s += '<rect x="' + (ox + (D.cols[0] - 9) * cw - 1) + '" y="' + (oy + D.allRows.indexOf(zoneRows[0]) * rh - 1) + '" width="' + (D.cols.length * cw + 2) +
+    '" height="' + (zoneRows.length * rh + 4 + 2) + '" rx="3" fill="none" stroke="' + D.color + '" stroke-width="1.4"/>';
+  document.getElementById('minimap').innerHTML = s + '</svg>';
+})();
+
+render();
+</script>
+</body>
+</html>
