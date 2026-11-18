@@ -39,7 +39,8 @@
     background: linear-gradient(#2a1d14, #6b4a2f); border-top: 4px solid #e62b1e;
     color: #f5e9da; font-weight: 700; letter-spacing: 4px; font-size: 13px;
     display: flex; align-items: center; justify-content: center; }
-  .grid { display: grid; justify-content: center; column-gap: 6px; row-gap: 8px; }
+  .grid { display: grid; width: max-content; margin: 0 auto; column-gap: 6px; row-gap: 8px; }
+  @media (max-width: 520px) { .edge { font-size: 10px; letter-spacing: 2px; } .rowlabel { width: auto; } }
   .rowlabel { display: flex; align-items: center; justify-content: center; font-weight: 700;
     font-size: 20px; color: #3a3a3e; width: 28px; }
   .aisle-gap { height: 14px; }
@@ -81,6 +82,7 @@
     align-items: center; justify-content: center; border: 2px dashed rgba(255,255,255,0.7);
     border-radius: 9px; color: rgba(255,255,255,0.9); font-size: calc(var(--seat) * 0.12); pointer-events: none; }
 
+  .scrollhint { margin-top: 12px; text-align: center; font-size: 13px; line-height: 1.6; color: var(--zone); font-weight: 700; }
   .status { min-height: 22px; text-align: center; margin: 14px 0 0; font-size: 14px; color: var(--muted); }
   .status b { color: var(--zone); }
 
@@ -116,6 +118,7 @@
         <div class="stage">▲ STAGE · 무대 방향</div>
         <div class="grid" id="grid"></div>
       </div>
+      <div class="scrollhint" id="scrollHint" hidden>← 좌석을 옆으로 밀면 나머지 좌석이 보여요 →<br>휴대폰에서는 이름표를 한 번 누르고 옮길 좌석을 누르는 방식이 편해요.</div>
       <div class="status" id="status">이름표를 끌어서 원하는 자리에 놓아 주세요.</div>
       <div class="actions">
         <button id="undo" disabled>한 단계 되돌리기</button>
@@ -151,8 +154,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const D = {"speaker":"노경철","color":"#c98200","rows":["C","D","E","F"],"cols":[9,10],"initial":{"C-9":"이재화님","C-10":"이유진님","D-9":"김민혜님","D-10":"허경린님","E-9":"김기윤님","E-10":"박정준님","F-9":"백시연님","F-10":"동반 1인"},"gapAfter":["C","F"],"rowColor":{"C":"red","D":"red","E":"red","F":"gray"},"neighborL":null,"neighborR":11,"allRows":["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P"],"allSeats":{"A":[9,10,11,12,13,14,15,16,17],"P":[9,10,11,19,20,21],"B":[9,10,11,12,13,14,15,16,17,18,19,20,21],"C":[9,10,11,12,13,14,15,16,17,18,19,20,21],"D":[9,10,11,12,13,14,15,16,17,18,19,20,21],"E":[9,10,11,12,13,14,15,16,17,18,19,20,21],"F":[9,10,11,12,13,14,15,16,17,18,19,20,21],"G":[9,10,11,12,13,14,15,16,17,18,19,20,21],"H":[9,10,11,12,13,14,15,16,17,18,19,20,21],"I":[9,10,11,12,13,14,15,16,17,18,19,20,21],"J":[9,10,11,12,13,14,15,16,17,18,19,20,21],"K":[9,10,11,12,13,14,15,16,17,18,19,20,21],"L":[9,10,11,12,13,14,15,16,17,18,19,20,21],"M":[9,10,11,12,13,14,15,16,17,18,19,20,21],"N":[9,10,11,12,13,14,15,16,17,18,19,20,21],"O":[9,10,11,12,13,14,15,16,17,18,19,20,21]}};
-const STORE = 'tedx2026-seat-proposal-' + D.speaker;
+const D = {"speaker":"노경철","color":"#c98200","rows":["C","D","E","F"],"cols":[9,10],"initial":{"C-9":"김기윤님","C-10":"이유진님","D-9":"이재화님","D-10":"박정준님","E-9":"김민혜님","E-10":"허경린님","F-9":"백시연님","F-10":"동반 1인"},"gapAfter":["C","F"],"rowColor":{"C":"red","D":"red","E":"red","F":"gray"},"neighborL":null,"neighborR":11,"allRows":["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P"],"allSeats":{"A":[9,10,11,12,13,14,15,16,17],"P":[9,10,11,19,20,21],"B":[9,10,11,12,13,14,15,16,17,18,19,20,21],"C":[9,10,11,12,13,14,15,16,17,18,19,20,21],"D":[9,10,11,12,13,14,15,16,17,18,19,20,21],"E":[9,10,11,12,13,14,15,16,17,18,19,20,21],"F":[9,10,11,12,13,14,15,16,17,18,19,20,21],"G":[9,10,11,12,13,14,15,16,17,18,19,20,21],"H":[9,10,11,12,13,14,15,16,17,18,19,20,21],"I":[9,10,11,12,13,14,15,16,17,18,19,20,21],"J":[9,10,11,12,13,14,15,16,17,18,19,20,21],"K":[9,10,11,12,13,14,15,16,17,18,19,20,21],"L":[9,10,11,12,13,14,15,16,17,18,19,20,21],"M":[9,10,11,12,13,14,15,16,17,18,19,20,21],"N":[9,10,11,12,13,14,15,16,17,18,19,20,21],"O":[9,10,11,12,13,14,15,16,17,18,19,20,21]}};
+// 배치 데이터가 바뀌면 저장 키도 바뀌어 이전 작업이 자동 초기화됨
+const STORE = 'tedx2026-seat-proposal-' + D.speaker + '-' +
+  Array.from(JSON.stringify(D.initial)).reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7).toString(36);
 document.documentElement.style.setProperty('--zone', D.color);
 document.getElementById('sub').innerHTML =
   '<b>' + D.speaker + ' 연사님</b> 내빈 구역 · ' + D.rows[0] + '–' + D.rows[D.rows.length - 1] + '열 ' +
@@ -196,12 +201,6 @@ function chairSvg(p) {
 // ---------- 화면 구성 ----------
 const grid = document.getElementById('grid');
 const hasL = D.neighborL != null, hasR = D.neighborR != null;
-const tracks = ['28px', '26px'];
-if (hasL) tracks.push('var(--seat)');
-tracks.push('repeat(' + D.cols.length + ', var(--seat))');
-if (hasR) tracks.push('var(--seat)');
-tracks.push('26px', '28px');
-grid.style.gridTemplateColumns = tracks.join(' ');
 const firstZoneCol = 3 + (hasL ? 1 : 0);
 const lastZoneCol = firstZoneCol + D.cols.length; // exclusive
 const seatEls = {};
@@ -221,8 +220,8 @@ D.rows.forEach((r, i) => {
 });
 const lastLine = gr;
 
-place(div('colhead', hasL ? '다른 구역' : ''), 1, firstZoneCol - 1);
-if (hasR) place(div('colhead', '다른 구역'), 1, lastZoneCol);
+place(div('colhead' + (hasL ? ' nb' : ''), hasL ? '다른 구역' : ''), 1, firstZoneCol - 1);
+if (hasR) place(div('colhead nb', '다른 구역'), 1, lastZoneCol);
 // 통로 표시 (구역이 가장자리일 때)
 const edgeL = place(div('edge', D.neighborL == null ? '통로' : ''), '2 / ' + lastLine, 2);
 const edgeR = place(div('edge', D.neighborR == null ? '통로' : ''), '2 / ' + lastLine, lastZoneCol + (hasR ? 1 : 0));
@@ -234,8 +233,8 @@ D.rows.forEach(r => {
   place(div('rowlabel', r), line, 1);
   place(div('rowlabel', r), line, lastZoneCol + (hasR ? 1 : 0) + 1);
   const pal = PAL[D.rowColor[r]];
-  if (hasL) place(div('seat other', chairSvg(pal) + '<div class="num">' + D.neighborL + '</div>'), line, firstZoneCol - 1);
-  if (hasR) place(div('seat other', chairSvg(pal) + '<div class="num">' + D.neighborR + '</div>'), line, lastZoneCol);
+  if (hasL) place(div('seat other nb', chairSvg(pal) + '<div class="num">' + D.neighborL + '</div>'), line, firstZoneCol - 1);
+  if (hasR) place(div('seat other nb', chairSvg(pal) + '<div class="num">' + D.neighborR + '</div>'), line, lastZoneCol);
   D.cols.forEach((c, k) => {
     const id = r + '-' + c;
     const s = div('seat mine', chairSvg(pal) + '<div class="num">' + c + '</div>');
@@ -249,10 +248,28 @@ box.style.margin = '-8px -5px'; box.style.pointerEvents = 'none';
 place(div('zonetag', '<span>' + D.speaker + ' 연사 내빈</span>'), lastLine, firstZoneCol, D.cols.length);
 
 function fitSeats() {
-  const n = D.cols.length + (hasL ? 1 : 0) + (hasR ? 1 : 0);
-  const fixed = 28 * 2 + 26 * 2 + (n + 3) * 6 + 12; // 열 이름·통로·간격
-  const s = Math.max(54, Math.min(124, Math.floor((grid.parentElement.clientWidth - fixed) / n)));
+  // 좁은 화면: 여백을 줄이고, 그래도 좁으면 옆 구역(참고용) 좌석을 숨김
+  const narrow = window.innerWidth <= 520;
+  const LBL = narrow ? 18 : 28, EDGE = narrow ? 12 : 26, GAP = narrow ? 4 : 6;
+  const W = grid.parentElement.clientWidth;
+  const nTracks = 4 + D.cols.length + (hasL ? 1 : 0) + (hasR ? 1 : 0);
+  const fixed = 2 * LBL + 2 * EDGE + (nTracks - 1) * GAP;
+  const fit = n => Math.floor((W - fixed) / n);
+  let showNb = hasL || hasR;
+  let n = D.cols.length + (hasL ? 1 : 0) + (hasR ? 1 : 0);
+  if (showNb && fit(n) < 64) { showNb = false; n = D.cols.length; }
+  const s = Math.max(54, Math.min(124, fit(n)));
+  const nb = showNb ? 'var(--seat)' : '0px';
+  const tracks = [LBL + 'px', EDGE + 'px'];
+  if (hasL) tracks.push(nb);
+  tracks.push('repeat(' + D.cols.length + ', var(--seat))');
+  if (hasR) tracks.push(nb);
+  tracks.push(EDGE + 'px', LBL + 'px');
+  grid.style.gridTemplateColumns = tracks.join(' ');
+  grid.style.columnGap = GAP + 'px';
+  grid.querySelectorAll('.nb').forEach(e => { e.style.display = showNb ? '' : 'none'; });
   document.documentElement.style.setProperty('--seat', s + 'px');
+  document.getElementById('scrollHint').hidden = fixed + n * s <= W;
 }
 window.addEventListener('resize', fitSeats);
 fitSeats();
